@@ -122,7 +122,7 @@ public class WebReviewActivity extends ActionBarActivity {
         @Override
         public void onClick (DialogInterface ifc, int which)
         {
-            new PrefManager(WebReviewActivity.this).setIgnoreButtonMessage(false);
+            PrefManager.setIgnoreButtonMessage(false);
         }
     }
 
@@ -136,7 +136,7 @@ public class WebReviewActivity extends ActionBarActivity {
         @Override
         public void onClick (DialogInterface ifc, int which)
         {
-            new PrefManager(WebReviewActivity.this).setHWAccelMessage(false);
+            PrefManager.setHWAccelMessage(false);
         }
     }
 
@@ -148,7 +148,7 @@ public class WebReviewActivity extends ActionBarActivity {
         @Override
         public void onClick (View w)
         {
-            prefMan.toggleMute();
+            PrefManager.toggleMute();
             applyMuteSettings ();
         }
     }
@@ -269,12 +269,12 @@ public class WebReviewActivity extends ActionBarActivity {
             if (url.startsWith ("http")) {
 
                 wv.js (JS_INIT_KBD);
-                if (prefMan.getExternalFramePlacer()) {
-                    dict = prefMan.getExternalFramePlacerDictionary();
+                if (PrefManager.getExternalFramePlacer()) {
+                    dict = PrefManager.getExternalFramePlacerDictionary();
                     ExternalFramePlacer.run (wv, dict);
                 }
 
-                if (prefMan.getPartOfSpeech())
+                if (PrefManager.getPartOfSpeech())
                     PartOfSpeech.enter(WebReviewActivity.this, wv, url);
             }
         }
@@ -386,7 +386,7 @@ public class WebReviewActivity extends ActionBarActivity {
 
             public PrefManager.Keyboard getKeyboard (WebReviewActivity wav)
             {
-                return prefMan.getReviewsKeyboard();
+                return PrefManager.getReviewsKeyboard();
             }
 
             public boolean canMute ()
@@ -406,7 +406,7 @@ public class WebReviewActivity extends ActionBarActivity {
 
             public PrefManager.Keyboard getKeyboard (WebReviewActivity wav)
             {
-                return prefMan.getReviewsKeyboard();
+                return PrefManager.getReviewsKeyboard();
             }
 
             public boolean canMute ()
@@ -606,9 +606,6 @@ public class WebReviewActivity extends ActionBarActivity {
     private static final String
             JS_SINGLE_MODE = "if (window.fakeRandom) Math.random=window.fakeRandom;";
 
-    /** Preferences Manager */
-    static PrefManager prefMan;
-
     /** The threads reaper */
     TimerThreadsReaper reaper;
 
@@ -675,7 +672,6 @@ public class WebReviewActivity extends ActionBarActivity {
     {
         super.onCreate (bundle);
 
-        prefMan = new PrefManager(this);
         Resources res;
 
         CookieSyncManager.createInstance (this);
@@ -689,7 +685,7 @@ public class WebReviewActivity extends ActionBarActivity {
         mActionBar = getSupportActionBar();
         mActionBar.setDisplayHomeAsUpEnabled(true);
 
-        if (prefMan.getReviewsLessonsFullscreen()) {
+        if (PrefManager.getReviewsLessonsFullscreen()) {
             mActionBar.hide();
         }
 
@@ -802,7 +798,7 @@ public class WebReviewActivity extends ActionBarActivity {
         applyMuteSettings ();
         applySingleSettings ();
 
-        if (prefMan.getHWAccel())
+        if (PrefManager.getHWAccel())
             showHWAccelMessage();
 
         wv.acquire ();
@@ -939,18 +935,18 @@ public class WebReviewActivity extends ActionBarActivity {
     {
         boolean show;
 
-        show = kbstatus.canMute () && prefMan.getMuteButton();
+        show = kbstatus.canMute () && PrefManager.getMuteButton();
         muteH.setVisibility (show ? View.VISIBLE : View.GONE);
         muteHolder.setVisibility(show ? View.VISIBLE : View.GONE);
 
-        setMute (show && prefMan.getMute());
+        setMute (show && PrefManager.getMute());
     }
 
     private void applySingleSettings ()
     {
         boolean show;
 
-        show = kbstatus.canDoSingle () && prefMan.getSingleButton();
+        show = kbstatus.canDoSingle () && PrefManager.getSingleButton();
         singleb.setVisibility (show ? View.VISIBLE : View.GONE);
         singleHolder.setVisibility(show ? View.VISIBLE : View.GONE);
         if (single) {
@@ -1045,14 +1041,14 @@ public class WebReviewActivity extends ActionBarActivity {
         AlertDialog.Builder builder;
         Dialog dialog;
 
-        if (visible && prefMan.getIgnoreButtonMessage()) {
+        if (visible && PrefManager.getIgnoreButtonMessage()) {
             builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.ignore_button_message_title);
             builder.setMessage(R.string.ignore_button_message_text);
             builder.setPositiveButton(R.string.ignore_button_message_ok, new OkListener());
 
             dialog = builder.create();
-            new PrefManager(this).setIgnoreButtonMessage(false);
+            PrefManager.setIgnoreButtonMessage(false);
 
             dialog.show();
         }
@@ -1063,14 +1059,14 @@ public class WebReviewActivity extends ActionBarActivity {
         AlertDialog.Builder builder;
         Dialog dialog;
 
-        if (prefMan.getHWAccelMessage()) {
+        if (PrefManager.getHWAccelMessage()) {
             builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.hw_accel_message_title);
             builder.setMessage(R.string.hw_accel_message_text);
             builder.setPositiveButton(R.string.ok, new AccelOkListener());
 
             dialog = builder.create();
-            new PrefManager(this).setHWAccelMessage(false);
+            PrefManager.setHWAccelMessage(false);
 
             dialog.show();
         }
